@@ -8,6 +8,7 @@ export class Debug {
     this.#createPanel()
     this.#createSceneConfig()
     this.#createControlsConfig()
+    this.#createShieldConfig()
   }
 
   refresh() {
@@ -41,13 +42,18 @@ export class Debug {
 
     folder.addSeparator()
 
-    const items = ['Plane', 'Shield']
+    const items = ['Plane', 'Shield', 'Laser']
 
     items.forEach(name => {
       folder.addButton({ title: `Attach to ${name}` }).on('click', () => {
         this.app.transformControls.attach(this.app.scene.getObjectByName(name))
       })
     })
+  }
+
+  #createShieldConfig() {
+    const folder = this.pane.addFolder({ title: 'Shield' })
+    const mesh = this.app.scene.getObjectByName('Shield')
   }
 
   /**

@@ -6,7 +6,11 @@ import {
   Vector2,
   SphereGeometry,
   Mesh,
-  PlaneGeometry
+  PlaneGeometry,
+  CylinderGeometry,
+  MeshBasicMaterial,
+  Raycaster,
+  Vector3
 } from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
@@ -30,6 +34,8 @@ class App {
     this.#createClock()
     this.#createPlane()
     this.#createShield()
+    this.#createLaser()
+    this.#createRay()
     this.#addListeners()
     this.#createControls()
 
@@ -53,6 +59,8 @@ class App {
 
   #update() {
     const elapsed = this.clock.getElapsedTime()
+
+    this.#updateRay()
   }
 
   #render() {
@@ -107,13 +115,45 @@ class App {
   }
 
   #createPlane() {
-    const geometry = new PlaneGeometry(20, 20, 10, 10)
+    const geometry = new PlaneGeometry(20, 20, 1, 1)
     geometry.rotateX(-Math.PI * 0.5)
 
     this.plane = new Mesh(geometry, FloorMaterial)
     this.plane.name = 'Plane'
 
     this.scene.add(this.plane)
+  }
+
+  #createRay() {
+    this.ray = new Raycaster(this.laser.position, new Vector3())
+  }
+
+  #updateRay() {
+    const shieldPos = this.shield.position.clone()
+    const laserPos = this.laser.position.clone()
+
+    this.ray.set(this.laser.position, shieldPos.sub(laserPos).normalize())
+    this.laser.lookAt(this.shield.position)
+
+    const intersects = this.ray.intersectObject(this.shield)
+
+    if (intersects.length > 0)
+      this.shield.material.uniforms.u_HitPoint.value = intersects[0].point
+  }
+
+  #createLaser() {
+    const geometry = new CylinderGeometry(0.05, 0.05, 1, 12, 1)
+    geometry.rotateX(-Math.PI * 0.5)
+    geometry.translate(0, 0, 0.5)
+
+    const material = new MeshBasicMaterial({ color: 0xff0000 })
+
+    this.laser = new Mesh(geometry, material)
+    this.laser.name = 'Laser'
+    this.laser.position.set(4, 0.3, 2)
+    this.laser.scale.z = 8
+
+    this.scene.add(this.laser)
   }
 
   #addListeners() {
