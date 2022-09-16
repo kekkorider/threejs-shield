@@ -7,6 +7,7 @@ export class Debug {
 
     this.#createPanel()
     this.#createSceneConfig()
+    this.#createControlsConfig()
   }
 
   refresh() {
@@ -28,6 +29,24 @@ export class Debug {
 
     folder.addInput(params, 'background', { label: 'Background Color' }).on('change', e => {
       this.app.renderer.setClearColor(new Color(e.value.r / 255, e.value.g / 255, e.value.b / 255))
+    })
+  }
+
+  #createControlsConfig() {
+    const folder = this.pane.addFolder({ title: 'Controls' })
+
+    folder.addButton({ title: 'Remove' }).on('click', () => {
+      this.app.transformControls.detach()
+    })
+
+    folder.addSeparator()
+
+    const items = ['Plane', 'Shield']
+
+    items.forEach(name => {
+      folder.addButton({ title: `Attach to ${name}` }).on('click', () => {
+        this.app.transformControls.attach(this.app.scene.getObjectByName(name))
+      })
     })
   }
 

@@ -10,6 +10,7 @@ import {
 } from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 
 import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
@@ -82,7 +83,13 @@ class App {
   }
 
   #createControls() {
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
+
+    this.transformControls = new TransformControls(this.camera, this.renderer.domElement)
+    this.transformControls.addEventListener('dragging-changed', event => {
+      this.orbitControls.enabled = !event.value
+    })
+    this.scene.add(this.transformControls)
   }
 
   #createClock() {
@@ -93,6 +100,7 @@ class App {
     const geometry = new SphereGeometry(1, 32, 32)
 
     this.shield = new Mesh(geometry, ShieldMaterial)
+    this.shield.name = 'Shield'
     this.shield.position.y = 0.35
 
     this.scene.add(this.shield)
@@ -103,6 +111,7 @@ class App {
     geometry.rotateX(-Math.PI * 0.5)
 
     this.plane = new Mesh(geometry, FloorMaterial)
+    this.plane.name = 'Plane'
 
     this.scene.add(this.plane)
   }
