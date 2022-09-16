@@ -1,0 +1,23 @@
+body {
+  overflow: hidden;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+#app canvas {
+  outline: none;
+}
+
+#debug {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  width: 350px;
+  z-index: 10;
+}
