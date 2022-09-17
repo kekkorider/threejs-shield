@@ -19,6 +19,9 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
 
+import { Simulation } from './Simulation'
+import { PhysicsShield } from './PhysicsShield'
+
 class App {
   #resizeCallback = () => this.#onResize()
 
@@ -32,6 +35,7 @@ class App {
     this.#createCamera()
     this.#createRenderer()
     this.#createClock()
+    this.#createSimulation()
     this.#createPlane()
     this.#createShield()
     this.#createLaser()
@@ -61,6 +65,7 @@ class App {
     const elapsed = this.clock.getElapsedTime()
 
     this.#updateRay()
+    this.simulation.update()
   }
 
   #render() {
@@ -105,13 +110,16 @@ class App {
   }
 
   #createShield() {
-    const geometry = new SphereGeometry(1, 32, 32)
+    const geometry = new SphereGeometry()
 
     this.shield = new Mesh(geometry, ShieldMaterial)
     this.shield.name = 'Shield'
     this.shield.position.y = 0.35
 
     this.scene.add(this.shield)
+
+    const physicsBody = new PhysicsShield(this.shield, this.scene)
+    this.simulation.addBody(physicsBody)
   }
 
   #createPlane() {
@@ -154,6 +162,10 @@ class App {
     this.laser.scale.z = 8
 
     this.scene.add(this.laser)
+  }
+
+  #createSimulation() {
+    this.simulation = new Simulation()
   }
 
   #addListeners() {

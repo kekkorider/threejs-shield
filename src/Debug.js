@@ -31,6 +31,18 @@ export class Debug {
     folder.addInput(params, 'background', { label: 'Background Color' }).on('change', e => {
       this.app.renderer.setClearColor(new Color(e.value.r / 255, e.value.g / 255, e.value.b / 255))
     })
+
+    folder.addSeparator()
+
+    folder.addButton({ title: 'Toggle Physics Debug' }).on('click', () => {
+      for (const body of this.app.simulation.bodies) {
+        if (!!body.debugMesh) {
+          body.removeDebugMesh()
+        } else {
+          body.createDebugMesh()
+        }
+      }
+    })
   }
 
   #createControlsConfig() {
@@ -42,7 +54,7 @@ export class Debug {
 
     folder.addSeparator()
 
-    const items = ['Plane', 'Shield', 'Laser']
+    const items = ['Plane', 'Laser']
 
     items.forEach(name => {
       folder.addButton({ title: `Attach to ${name}` }).on('click', () => {
