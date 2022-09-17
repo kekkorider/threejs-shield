@@ -19,7 +19,8 @@ export class PhysicsBody {
 
   createDebugMesh() {
     this.debugMesh = new Mesh(this.mesh.geometry, PhysicsDebugMaterial)
-    this.debugMesh.position.copy(this.mesh.position)
+    this.debugMesh.position.copy(this.physicsBody.position)
+    this.debugMesh.quaternion.copy(this.physicsBody.quaternion)
 
     this.scene.add(this.debugMesh)
   }

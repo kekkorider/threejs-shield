@@ -18,9 +18,11 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 
 import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
+import { BulletMaterial } from './materials/BulletMaterial'
 
 import { Simulation } from './Simulation'
 import { PhysicsShield } from './PhysicsShield'
+import { PhysicsBullet } from './PhysicsBullet'
 
 class App {
   #resizeCallback = () => this.#onResize()
@@ -28,6 +30,9 @@ class App {
   constructor(container) {
     this.container = document.querySelector(container)
     this.screen = new Vector2(this.container.clientWidth, this.container.clientHeight)
+
+    this.bulletGeometry = new CylinderGeometry(0.03, 0.03, 0.3, 12, 1)
+    this.bulletGeometry.rotateX(Math.PI * 0.5)
   }
 
   async init() {
@@ -59,6 +64,18 @@ class App {
   destroy() {
     this.renderer.dispose()
     this.#removeListeners()
+  }
+
+  spawnBullet() {
+    const bullet = new Mesh(this.bulletGeometry, BulletMaterial)
+    bullet.position.set(1.3, 1.3, 1.3)
+    bullet.lookAt(this.shield.position)
+
+    this.scene.add(bullet)
+
+    const body = new PhysicsBullet(bullet, this.scene)
+    body.physicsBody.quaternion.copy(bullet.quaternion)
+    this.simulation.addBody(body)
   }
 
   #update() {
@@ -102,6 +119,7 @@ class App {
     this.transformControls.addEventListener('dragging-changed', event => {
       this.orbitControls.enabled = !event.value
     })
+
     this.scene.add(this.transformControls)
   }
 

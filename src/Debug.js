@@ -43,6 +43,12 @@ export class Debug {
         }
       }
     })
+
+    folder.addSeparator()
+
+    folder.addButton({ title: 'Spawn Bullet' }).on('click', () => {
+      this.app.spawnBullet()
+    })
   }
 
   #createControlsConfig() {
