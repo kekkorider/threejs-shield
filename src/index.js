@@ -67,15 +67,23 @@ class App {
   }
 
   spawnBullet() {
+    // Add bullet mesh to scene
     const bullet = new Mesh(this.bulletGeometry, BulletMaterial)
-    bullet.position.set(1.3, 1.3, 1.3)
+
+    bullet.position.copy(this.laser.position)
     bullet.lookAt(this.shield.position)
 
     this.scene.add(bullet)
 
+    // Add physics body to the physics world
     const body = new PhysicsBullet(bullet, this.scene)
     body.physicsBody.quaternion.copy(bullet.quaternion)
     this.simulation.addBody(body)
+
+    // Shoot the bullet towards the shield
+    const dirVector = new Vector3()
+    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(8)
+    body.physicsBody.velocity.set(dirVector.x, dirVector.y, dirVector.z)
   }
 
   #update() {
@@ -168,7 +176,7 @@ class App {
   }
 
   #createLaser() {
-    const geometry = new CylinderGeometry(0.05, 0.05, 1, 12, 1)
+    const geometry = new CylinderGeometry(0.015, 0.015, 1, 12, 1)
     geometry.rotateX(-Math.PI * 0.5)
     geometry.translate(0, 0, 0.5)
 
