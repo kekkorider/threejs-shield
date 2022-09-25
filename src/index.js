@@ -20,9 +20,9 @@ import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
 import { BulletMaterial } from './materials/BulletMaterial'
 
-import { Simulation } from './Simulation'
-import { PhysicsShield } from './PhysicsShield'
-import { PhysicsBullet } from './PhysicsBullet'
+import { Simulation } from './physics/Simulation'
+import { PhysicsShield } from './physics/Shield'
+import { PhysicsBullet } from './physics/Bullet'
 
 class App {
   #resizeCallback = () => this.#onResize()

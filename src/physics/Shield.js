@@ -1,5 +1,5 @@
 import { Sphere, Body } from 'cannon-es'
-import { PhysicsBody } from './PhysicsBody'
+import { PhysicsBody } from './Body'
 
 export class PhysicsShield extends PhysicsBody {
   constructor(mesh, scene) {
