@@ -1,39 +1,45 @@
-import { World, Vec3 } from 'cannon-es'
+import { World, Vec3, SAPBroadphase } from 'cannon-es'
+import CannonDebugger from 'cannon-es-debugger'
 
 export class Simulation {
-  constructor() {
-    this.bodies = []
+  constructor(scene) {
+    this.scene = scene
+    this.items = []
 
     this.init()
   }
 
   init() {
     this.world = new World({
-      gravity: new Vec3(0, -9.82, 0)
+      gravity: new Vec3(0, 0, 0),
+      broadphase: new SAPBroadphase()
+    })
+
+    this.debugger = new CannonDebugger(this.scene, this.world, {
+      color: Math.random() * 0xffffff,
+      onUpdate: (body, mesh) => {
+        body.quaternion.copy(mesh.quaternion)
+      }
     })
   }
 
-  addBody(body) {
-    this.bodies.push(body)
-    this.world.addBody(body.physicsBody)
+  addItem(item) {
+    this.items.push(item)
+    this.world.addBody(item.physicsBody)
   }
 
-  removeBody(body) {
-    this.bodies = this.bodies.filter((b) => b !== body)
-    this.world.removeBody(body.physicsBody)
+  removeItem(item) {
+    this.items = this.items.filter((b) => b !== item)
+    this.world.removeBody(item.physicsBody)
   }
 
   update() {
     this.world.fixedStep()
 
-    for (const body of this.bodies) {
-      body.update()
+    for (const item of this.items) {
+      item.update()
     }
-  }
 
-  toggleDebug() {
-    for (const body of this.bodies) {
-      body.toggleDebug()
-    }
+    this.debugger.update()
   }
 }

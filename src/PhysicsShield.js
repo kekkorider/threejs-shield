@@ -10,13 +10,13 @@ export class PhysicsShield extends PhysicsBody {
 
   addBody() {
     const { position } = this.mesh
-    const { radius } = this.mesh.geometry.parameters.radius
+    const { radius } = this.mesh.geometry.parameters
 
     this.physicsBody = new Body({
       mass: 0,
       position,
       shape: new Sphere(radius + 0.01),
-      type: Body.KINEMATIC
+      type: Body.STATIC
     })
   }
 }

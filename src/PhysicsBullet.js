@@ -9,14 +9,14 @@ export class PhysicsBullet extends PhysicsBody {
   }
 
   addBody() {
-    const { position } = this.mesh
+    const { position, quaternion } = this.mesh
     const { radiusTop, radiusBottom, height, radialSegments: numSegments } = this.mesh.geometry.parameters
 
     this.physicsBody = new Body({
-      mass: 0,
+      mass: 1,
       position,
-      shape: new Cylinder(radiusTop, radiusBottom, height, numSegments),
-      type: Body.KINEMATIC
+      quaternion,
+      shape: new Cylinder(radiusTop, radiusBottom, height, numSegments)
     })
   }
 }

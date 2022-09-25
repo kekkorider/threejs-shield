@@ -32,7 +32,6 @@ class App {
     this.screen = new Vector2(this.container.clientWidth, this.container.clientHeight)
 
     this.bulletGeometry = new CylinderGeometry(0.03, 0.03, 0.3, 12, 1)
-    this.bulletGeometry.rotateX(Math.PI * 0.5)
   }
 
   async init() {
@@ -72,17 +71,17 @@ class App {
 
     bullet.position.copy(this.laser.position)
     bullet.lookAt(this.shield.position)
+    bullet.rotateX(Math.PI * 0.5)
 
     this.scene.add(bullet)
 
     // Add physics body to the physics world
     const body = new PhysicsBullet(bullet, this.scene)
-    body.physicsBody.quaternion.copy(bullet.quaternion)
-    this.simulation.addBody(body)
+    this.simulation.addItem(body)
 
     // Shoot the bullet towards the shield
     const dirVector = new Vector3()
-    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(8)
+    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(4)
     body.physicsBody.velocity.set(dirVector.x, dirVector.y, dirVector.z)
   }
 
@@ -117,7 +116,7 @@ class App {
     this.renderer.setSize(this.screen.x, this.screen.y)
     this.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio))
     this.renderer.setClearColor(0x121212)
-    this.renderer.physicallyCorrectLights = true
+    this.renderer.physicallyCorrectLights = false
   }
 
   #createControls() {
@@ -144,8 +143,8 @@ class App {
 
     this.scene.add(this.shield)
 
-    const physicsBody = new PhysicsShield(this.shield, this.scene)
-    this.simulation.addBody(physicsBody)
+    const body = new PhysicsShield(this.shield, this.scene)
+    this.simulation.addItem(body)
   }
 
   #createPlane() {
@@ -191,7 +190,7 @@ class App {
   }
 
   #createSimulation() {
-    this.simulation = new Simulation()
+    this.simulation = new Simulation(this.scene)
   }
 
   #addListeners() {
