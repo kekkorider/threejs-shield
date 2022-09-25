@@ -81,7 +81,7 @@ class App {
 
     // Shoot the bullet towards the shield
     const dirVector = new Vector3()
-    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(4)
+    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(6)
     body.physicsBody.velocity.set(dirVector.x, dirVector.y, dirVector.z)
   }
 
@@ -168,10 +168,10 @@ class App {
     this.ray.set(this.laser.position, shieldPos.sub(laserPos).normalize())
     this.laser.lookAt(this.shield.position)
 
-    const intersects = this.ray.intersectObject(this.shield)
+    // const intersects = this.ray.intersectObject(this.shield)
 
-    if (intersects.length > 0)
-      this.shield.material.uniforms.u_HitPoint.value = intersects[0].point
+    // if (intersects.length > 0)
+    //   this.shield.material.uniforms.u_HitPoint.value = intersects[0].point
   }
 
   #createLaser() {
@@ -195,6 +195,13 @@ class App {
 
   #addListeners() {
     window.addEventListener('resize', this.#resizeCallback, { passive: true })
+
+    window.addEventListener('collide', e => {
+      this.shield.material.uniforms.u_HitPoint.value = e.detail.hitPoint
+      const item = this.simulation.items.find(item => item.physicsBody === e.detail.body)
+      this.scene.remove(item.mesh)
+      this.simulation.removeItem(item)
+    })
   }
 
   #removeListeners() {

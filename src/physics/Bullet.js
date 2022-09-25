@@ -1,4 +1,4 @@
-import { Cylinder, Body } from 'cannon-es'
+import { Cylinder, Body, Vec3 } from 'cannon-es'
 import { PhysicsBody } from './Body'
 
 export class PhysicsBullet extends PhysicsBody {
@@ -18,5 +18,20 @@ export class PhysicsBullet extends PhysicsBody {
       quaternion,
       shape: new Cylinder(radiusTop, radiusBottom, height, numSegments)
     })
+
+    this.physicsBody.addEventListener('collide', this.#onCollide)
+  }
+
+  #onCollide(e) {
+    const data = {
+      body: e.target,
+      hitPoint: new Vec3(
+        e.contact.ni.x + e.body.position.x,
+        e.contact.ni.y + e.body.position.y,
+        e.contact.ni.z + e.body.position.z
+      )
+    }
+
+    window.dispatchEvent(new CustomEvent('collide', { detail: data }))
   }
 }

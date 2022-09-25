@@ -16,7 +16,6 @@ export class Simulation {
     })
 
     this.debugger = new CannonDebugger(this.scene, this.world, {
-      color: Math.random() * 0xffffff,
       onUpdate: (body, mesh) => {
         body.quaternion.copy(mesh.quaternion)
       }
@@ -29,8 +28,10 @@ export class Simulation {
   }
 
   removeItem(item) {
-    this.items = this.items.filter((b) => b !== item)
-    this.world.removeBody(item.physicsBody)
+    setTimeout(() => {
+      this.items = this.items.filter((b) => b !== item)
+      this.world.removeBody(item.physicsBody)
+    }, 0)
   }
 
   update() {
