@@ -2,13 +2,15 @@ varying vec2 vUv;
 varying vec3 vWorldPosition;
 varying vec3 vNormal;
 
-void main() {
-  // Mesh position in world space
-  vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+#include <clipping_planes_pars_vertex>
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+void main() {
+  #include <begin_vertex>
+
+  #include <project_vertex>
+  #include <clipping_planes_vertex>
 
   vUv = uv;
-  vWorldPosition = worldPosition.xyz;
+  vWorldPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;
   vNormal = normal;
 }

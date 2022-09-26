@@ -9,6 +9,8 @@ export const ShieldMaterial = new ShaderMaterial({
   transparent: true,
   side: DoubleSide,
   blending: AdditiveBlending,
+  clipIntersection: true,
+  clipping: true,
   uniforms: {
     u_HitPoint: { value: new Vector3() },
     u_FresnelFalloff: { value: 0.95 },

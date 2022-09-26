@@ -6,10 +6,14 @@ uniform vec3 u_HitPoint;
 uniform float u_FresnelFalloff;
 uniform float u_FresnelStrength;
 
+#include <clipping_planes_pars_fragment>
+
 #define colA vec4(0.2157, 0.3137, 0.3373, 0.135)
 #define colB vec4(0.0784, 0.5725, 0.6471, 1.0)
 
 void main() {
+  #include <clipping_planes_fragment>
+
   vec3 normal = normalize(vNormal);
   vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
 

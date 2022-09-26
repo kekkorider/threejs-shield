@@ -4,6 +4,7 @@ import {
   PerspectiveCamera,
   Clock,
   Vector2,
+  Plane,
   Mesh,
   PlaneGeometry,
   CylinderGeometry,
@@ -42,6 +43,7 @@ class App {
     this.#createClock()
     this.#createSimulation()
     this.#createPlane()
+    this.#createClippingPlane()
     await this.#createShield()
     this.#createLaser()
     this.#createRay()
@@ -118,14 +120,20 @@ class App {
     this.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio))
     this.renderer.setClearColor(0x121212)
     this.renderer.physicallyCorrectLights = false
+    this.renderer.localClippingEnabled = true
   }
 
   #createControls() {
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
 
     this.transformControls = new TransformControls(this.camera, this.renderer.domElement)
+
     this.transformControls.addEventListener('dragging-changed', event => {
       this.orbitControls.enabled = !event.value
+    })
+
+    this.transformControls.addEventListener('change', event => {
+      this.shield.material.clippingPlanes[0].constant = -this.plane.position.y
     })
 
     this.scene.add(this.transformControls)
@@ -135,12 +143,17 @@ class App {
     this.clock = new Clock()
   }
 
+  #createClippingPlane() {
+    this.clippingPlane = new Plane(new Vector3(0, 1, 0), 0)
+  }
+
   async #createShield() {
     const gltf = await gltfLoader.load('/shield.glb')
 
     this.shield = gltf.scene.getObjectByName('Shield')
 
     this.shield.material = ShieldMaterial
+    this.shield.material.clippingPlanes = [this.clippingPlane]
     this.shield.position.y = 0.35
 
     this.scene.add(this.shield)
