@@ -4,7 +4,6 @@ import {
   PerspectiveCamera,
   Clock,
   Vector2,
-  SphereGeometry,
   Mesh,
   PlaneGeometry,
   CylinderGeometry,
@@ -15,6 +14,8 @@ import {
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
+
+import { gltfLoader } from './loaders'
 
 import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
@@ -41,7 +42,7 @@ class App {
     this.#createClock()
     this.#createSimulation()
     this.#createPlane()
-    this.#createShield()
+    await this.#createShield()
     this.#createLaser()
     this.#createRay()
     this.#addListeners()
@@ -134,11 +135,13 @@ class App {
     this.clock = new Clock()
   }
 
-  #createShield() {
-    const geometry = new SphereGeometry()
+  async #createShield() {
+    const gltf = await gltfLoader.load('/shield.glb')
 
-    this.shield = new Mesh(geometry, ShieldMaterial)
-    this.shield.name = 'Shield'
+    this.shield = gltf.scene.getObjectByName('Shield')
+    console.log(this.shield)
+
+    this.shield.material = ShieldMaterial
     this.shield.position.y = 0.35
 
     this.scene.add(this.shield)

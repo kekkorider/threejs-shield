@@ -16,7 +16,9 @@ export class Simulation {
 
     if (window.location.hash.includes('#debug')) {
       const module = await import('cannon-es-debugger')
-      this.debugger = new module.default(this.scene, this.world)
+      this.debugger = new module.default(this.scene, this.world, {
+        color: 0x005500
+      })
     }
   }
 

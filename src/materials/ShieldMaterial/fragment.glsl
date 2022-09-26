@@ -3,7 +3,7 @@ varying vec3 vWorldPosition;
 
 uniform vec3 u_HitPoint;
 
-#define colA vec4(0.0902, 0.0902, 0.0902, 0.8)
+#define colA vec4(0.0902, 0.0902, 0.0902, 0.5)
 #define colB vec4(0.0784, 0.5725, 0.6471, 1.0)
 
 void main() {

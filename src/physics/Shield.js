@@ -9,8 +9,10 @@ export class PhysicsShield extends PhysicsBody {
   }
 
   addBody() {
+    this.mesh.geometry.computeBoundingSphere()
+
     const { position } = this.mesh
-    const { radius } = this.mesh.geometry.parameters
+    const { radius } = this.mesh.geometry.boundingSphere
 
     this.physicsBody = new Body({
       mass: 0,
