@@ -1,5 +1,4 @@
 import { World, Vec3, SAPBroadphase } from 'cannon-es'
-import CannonDebugger from 'cannon-es-debugger'
 
 export class Simulation {
   constructor(scene) {
@@ -9,17 +8,16 @@ export class Simulation {
     this.init()
   }
 
-  init() {
+  async init() {
     this.world = new World({
       gravity: new Vec3(0, 0, 0),
       broadphase: new SAPBroadphase()
     })
 
-    this.debugger = new CannonDebugger(this.scene, this.world, {
-      onUpdate: (body, mesh) => {
-        body.quaternion.copy(mesh.quaternion)
-      }
-    })
+    if (window.location.hash.includes('#debug')) {
+      const module = await import('cannon-es-debugger')
+      this.debugger = new module.default(this.scene, this.world)
+    }
   }
 
   addItem(item) {
@@ -41,6 +39,6 @@ export class Simulation {
       item.update()
     }
 
-    this.debugger.update()
+    this.debugger?.update()
   }
 }
