@@ -15,6 +15,7 @@
   "dependencies": {
     "cannon-es": "^0.20.0",
     "cannon-es-debugger": "^1.0.0",
+    "gsap": "^3.11.1",
     "three": "^0.144.0",
     "tweakpane": "^3.1.0"
   }

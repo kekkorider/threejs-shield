@@ -1,5 +1,6 @@
 import { Pane } from 'tweakpane'
 import { Color } from 'three'
+import { gsap } from 'gsap'
 
 export class Debug {
   constructor(app) {
@@ -46,8 +47,16 @@ export class Debug {
 
     folder.addSeparator()
 
-    folder.addButton({ title: 'Spawn Bullet' }).on('click', () => {
+    folder.addButton({ title: 'Spawn Bullet from laser position' }).on('click', () => {
       this.app.spawnBullet()
+    })
+
+    folder.addButton({ title: 'Spawn Bullet from random position' }).on('click', () => {
+      this.app.spawnBullet({
+        x: gsap.utils.random(2, 5) * gsap.utils.random([-1, 1]),
+        y: gsap.utils.random(-3, 3),
+        z: gsap.utils.random(2, 5) * gsap.utils.random([-1, 1])
+      })
     })
   }
 

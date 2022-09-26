@@ -66,11 +66,11 @@ class App {
     this.#removeListeners()
   }
 
-  spawnBullet() {
+  spawnBullet(position = this.laser.position) {
     // Add bullet mesh to scene
     const bullet = new Mesh(this.bulletGeometry, BulletMaterial)
 
-    bullet.position.copy(this.laser.position)
+    bullet.position.copy(position)
     bullet.lookAt(this.shield.position)
     bullet.rotateX(Math.PI * 0.5)
 
@@ -139,7 +139,6 @@ class App {
     const gltf = await gltfLoader.load('/shield.glb')
 
     this.shield = gltf.scene.getObjectByName('Shield')
-    console.log(this.shield)
 
     this.shield.material = ShieldMaterial
     this.shield.position.y = 0.35
