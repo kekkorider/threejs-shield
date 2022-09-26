@@ -81,6 +81,9 @@ export class Debug {
   #createShieldConfig() {
     const folder = this.pane.addFolder({ title: 'Shield' })
     const mesh = this.app.scene.getObjectByName('Shield')
+
+    folder.addInput(mesh.material.uniforms.u_FresnelFalloff, 'value', { label: 'Fresnel falloff', min: 0, max: 3 })
+    folder.addInput(mesh.material.uniforms.u_FresnelStrength, 'value', { label: 'Fresnel strength', min: 0, max: 1 })
   }
 
   /**

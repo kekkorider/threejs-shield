@@ -1,5 +1,6 @@
 varying vec2 vUv;
 varying vec3 vWorldPosition;
+varying vec3 vNormal;
 
 void main() {
   // Mesh position in world space
@@ -9,4 +10,5 @@ void main() {
 
   vUv = uv;
   vWorldPosition = worldPosition.xyz;
+  vNormal = normal;
 }
