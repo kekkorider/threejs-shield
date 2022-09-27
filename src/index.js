@@ -10,13 +10,14 @@ import {
   CylinderGeometry,
   MeshBasicMaterial,
   Raycaster,
-  Vector3
+  Vector3,
+  RepeatWrapping
 } from 'three'
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 
-import { gltfLoader } from './loaders'
+import { gltfLoader, textureLoader } from './loaders'
 
 import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
@@ -44,7 +45,10 @@ class App {
     this.#createSimulation()
     this.#createPlane()
     this.#createClippingPlane()
+
+    await this.#loadTextures()
     await this.#createShield()
+
     this.#createLaser()
     this.#createRay()
     this.#addListeners()
@@ -90,6 +94,8 @@ class App {
 
   #update() {
     const elapsed = this.clock.getElapsedTime()
+
+    this.shield.material.uniforms.u_Time.value = elapsed;
 
     this.#updateRay()
     this.simulation.update()
@@ -147,12 +153,23 @@ class App {
     this.clippingPlane = new Plane(new Vector3(0, 1, 0), -this.plane.position.y)
   }
 
+  async #loadTextures() {
+    const [noise] = await textureLoader.load(['/perlin-noise.png'])
+
+    noise.wrapS = noise.wrapT = RepeatWrapping
+
+    this.textures = {
+      noise
+    }
+  }
+
   async #createShield() {
     const gltf = await gltfLoader.load('/shield.glb')
 
     this.shield = gltf.scene.getObjectByName('Shield')
 
     this.shield.material = ShieldMaterial
+    this.shield.material.uniforms.t_Noise.value = this.textures.noise
     this.shield.material.clippingPlanes = [this.clippingPlane]
     this.shield.position.y = 0.35
 
@@ -203,6 +220,8 @@ class App {
     this.laser.scale.z = 8
 
     this.scene.add(this.laser)
+
+    this.laser.visible = false
   }
 
   #createSimulation() {

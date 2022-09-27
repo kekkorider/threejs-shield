@@ -10,5 +10,5 @@ void main() {
   vec3 color = step(borderThickness, gv.x) * step(borderThickness, gv.y) * white + (1.0 - step(borderThickness, gv.x) * step(borderThickness, gv.y)) * black;
   color = 1.0 - color;
 
-  gl_FragColor = vec4(color, color.r);
+  gl_FragColor = vec4(color*0.15, color.r);
 }
