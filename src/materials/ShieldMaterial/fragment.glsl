@@ -3,15 +3,14 @@ varying vec3 vWorldPosition;
 varying vec3 vNormal;
 
 uniform vec3 u_HitPoint;
+uniform vec4 u_HitPointColorA;
+uniform vec4 u_HitPointColorB;
 uniform float u_FresnelFalloff;
 uniform float u_FresnelStrength;
 uniform float u_HitPointSize;
 uniform float u_HitPointThickness;
 
 #include <clipping_planes_pars_fragment>
-
-#define colA vec4(0.2157, 0.3137, 0.3373, 0.008)
-#define colB vec4(0.0784, 0.5725, 0.6471, 0.7)
 
 void main() {
   #include <clipping_planes_fragment>
@@ -35,7 +34,7 @@ void main() {
   fresnel = smoothstep(0.45, 0.65, fresnel);
   fresnel *= u_FresnelStrength;
 
-  vec4 color = mix(colA, colB, d);
+  vec4 color = mix(u_HitPointColorA, u_HitPointColorB, d);
 
   #if !defined(FLIP_SIDED)
     color.rgb += fresnel;

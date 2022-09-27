@@ -1,5 +1,5 @@
 import { Pane } from 'tweakpane'
-import { Color } from 'three'
+import { Color, Vector4 } from 'three'
 import { gsap } from 'gsap'
 
 export class Debug {
@@ -87,6 +87,11 @@ export class Debug {
 
     folder.addInput(mesh.material.uniforms.u_HitPointSize, 'value', { label: 'Hit point size', min: 0, max: 3, step: 0.01 })
     folder.addInput(mesh.material.uniforms.u_HitPointThickness, 'value', { label: 'Hit point thickness', min: 0, max: 1, step: 0.01 })
+
+    folder.addSeparator()
+
+    this.#createColorUniformAlphaControl(mesh, folder, 'u_HitPointColorA', 'Color A')
+    this.#createColorUniformAlphaControl(mesh, folder, 'u_HitPointColorB', 'Color B')
   }
 
   /**
@@ -94,13 +99,34 @@ export class Debug {
    *
    * @param {*} obj Any THREE object with a color property
    * @param {*} folder The folder to add the control to
+   * @param {*} label The label of the control
    */
-  #createColorControl(obj, folder) {
+  #createColorControl(obj, folder, label = 'Color') {
     const baseColor255 = obj.color.clone().multiplyScalar(255)
     const params = { color: { r: baseColor255.r, g: baseColor255.g, b: baseColor255.b } }
 
-    folder.addInput(params, 'color', { label: 'Color' }).on('change', e => {
+    folder.addInput(params, 'color', { label }).on('change', e => {
       obj.color.setRGB(e.value.r, e.value.g, e.value.b).multiplyScalar(1 / 255)
+    })
+  }
+
+  /**
+   * Adds a color control for a custom uniform to the given object in the given folder.
+   *
+   * @param {THREE.Mesh} obj A `THREE.Mesh` object
+   * @param {*} folder The folder to add the control to
+   * @param {String} uniformName The name of the uniform to control
+   * @param {String} label The label to use for the control
+   */
+  #createColorUniformAlphaControl(obj, folder, uniformName, label = 'Color') {
+    const preMultVector = new Vector4(255, 255, 255, 1)
+    const postMultVector = new Vector4(1 / 255, 1 / 255, 1 / 255, 1)
+
+    const baseColor255 = obj.material.uniforms[uniformName].value.clone().multiply(preMultVector)
+    const params = { color: { r: baseColor255.x, g: baseColor255.y, b: baseColor255.z, a: baseColor255.w } }
+
+    folder.addInput(params, 'color', { label, view: 'color', color: { alpha: true } }).on('change', e => {
+      obj.material.uniforms[uniformName].value.set(e.value.r, e.value.g, e.value.b, e.value.a).multiply(postMultVector)
     })
   }
 }
