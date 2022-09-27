@@ -144,7 +144,7 @@ class App {
   }
 
   #createClippingPlane() {
-    this.clippingPlane = new Plane(new Vector3(0, 1, 0), 0)
+    this.clippingPlane = new Plane(new Vector3(0, 1, 0), -this.plane.position.y)
   }
 
   async #createShield() {
@@ -163,10 +163,11 @@ class App {
   }
 
   #createPlane() {
-    const geometry = new PlaneGeometry(20, 20, 1, 1)
+    const geometry = new PlaneGeometry(50, 50, 1, 1)
     geometry.rotateX(-Math.PI * 0.5)
 
     this.plane = new Mesh(geometry, FloorMaterial)
+    this.plane.position.y -= 0.7
     this.plane.name = 'Plane'
 
     this.scene.add(this.plane)

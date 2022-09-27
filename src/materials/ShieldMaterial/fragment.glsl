@@ -5,11 +5,13 @@ varying vec3 vNormal;
 uniform vec3 u_HitPoint;
 uniform float u_FresnelFalloff;
 uniform float u_FresnelStrength;
+uniform float u_HitPointSize;
+uniform float u_HitPointThickness;
 
 #include <clipping_planes_pars_fragment>
 
-#define colA vec4(0.2157, 0.3137, 0.3373, 0.135)
-#define colB vec4(0.0784, 0.5725, 0.6471, 1.0)
+#define colA vec4(0.2157, 0.3137, 0.3373, 0.008)
+#define colB vec4(0.0784, 0.5725, 0.6471, 0.7)
 
 void main() {
   #include <clipping_planes_fragment>
@@ -17,11 +19,17 @@ void main() {
   vec3 normal = normalize(vNormal);
   vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
 
-  // Draw a circle on the surface of the sphere
-  float d = distance(u_HitPoint, vWorldPosition);
-  d = smoothstep(0.65, 0.68, d);
-  d = 1.0 - d;
+  // Draw a ring on the surface of the sphere
+  float dOuter = distance(u_HitPoint, vWorldPosition);
+  dOuter = smoothstep(u_HitPointSize, u_HitPointSize+u_HitPointThickness, dOuter);
+  dOuter = 1.0 - dOuter;
 
+  float dInner = distance(u_HitPoint, vWorldPosition);
+  dInner = smoothstep(u_HitPointSize-u_HitPointThickness, u_HitPointSize, dInner);
+
+  float d = dOuter*dInner;
+
+  // Fresnel effect
   float fresnel = 1.0 - max(0.0, dot(viewDirection, normal));
   fresnel = pow(fresnel, u_FresnelFalloff);
   fresnel = smoothstep(0.45, 0.65, fresnel);

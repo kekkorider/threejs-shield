@@ -10,6 +10,7 @@ export class Debug {
     this.#createSceneConfig()
     this.#createControlsConfig()
     this.#createShieldConfig()
+    this.#createHitPointConfig()
   }
 
   refresh() {
@@ -36,13 +37,7 @@ export class Debug {
     folder.addSeparator()
 
     folder.addButton({ title: 'Toggle Physics Debug' }).on('click', () => {
-      for (const body of this.app.simulation.bodies) {
-        if (!!body.debugMesh) {
-          body.removeDebugMesh()
-        } else {
-          body.createDebugMesh()
-        }
-      }
+      window.dispatchEvent(new CustomEvent('togglePhysicsDebug'))
     })
 
     folder.addSeparator()
@@ -84,6 +79,14 @@ export class Debug {
 
     folder.addInput(mesh.material.uniforms.u_FresnelFalloff, 'value', { label: 'Fresnel falloff', min: 0, max: 3 })
     folder.addInput(mesh.material.uniforms.u_FresnelStrength, 'value', { label: 'Fresnel strength', min: 0, max: 1 })
+  }
+
+  #createHitPointConfig() {
+    const folder = this.pane.addFolder({ title: 'Hit Point' })
+    const mesh = this.app.scene.getObjectByName('Shield')
+
+    folder.addInput(mesh.material.uniforms.u_HitPointSize, 'value', { label: 'Hit point size', min: 0, max: 3, step: 0.01 })
+    folder.addInput(mesh.material.uniforms.u_HitPointThickness, 'value', { label: 'Hit point thickness', min: 0, max: 1, step: 0.01 })
   }
 
   /**

@@ -16,8 +16,14 @@ export class Simulation {
 
     if (window.location.hash.includes('#debug')) {
       const module = await import('cannon-es-debugger')
+
       this.debugger = new module.default(this.scene, this.world, {
-        color: 0x005500
+        color: 0x005500,
+        onInit: (body, mesh) => {
+          window.addEventListener('togglePhysicsDebug', () => {
+            mesh.visible = !mesh.visible
+          })
+        }
       })
     }
   }
