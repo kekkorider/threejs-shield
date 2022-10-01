@@ -36,6 +36,10 @@ export class Debug {
 
     folder.addSeparator()
 
+    folder.addMonitor(this.app, 'currentHitPointsNumber', { label: 'Hit points number' })
+
+    folder.addSeparator()
+
     folder.addButton({ title: 'Toggle Physics Debug' }).on('click', () => {
       window.dispatchEvent(new CustomEvent('togglePhysicsDebug'))
     })
@@ -87,8 +91,15 @@ export class Debug {
     const folder = this.pane.addFolder({ title: 'Hit Point' })
     const mesh = this.app.scene.getObjectByName('Shield')
 
-    folder.addInput(mesh.material.uniforms.u_HitPointSize, 'value', { label: 'Hit point size', min: 0, max: 3, step: 0.01 })
-    folder.addInput(mesh.material.uniforms.u_HitPointThickness, 'value', { label: 'Hit point thickness', min: 0, max: 1, step: 0.01 })
+    folder.addInput(mesh.material.uniforms.u_HitPoints.value[0], 'size', { label: 'Hit point size', min: 0, max: 3, step: 0.01 })
+      .on('change', ({ value }) => {
+        mesh.material.uniforms.u_HitPoints.value[0].size = value
+      })
+
+    folder.addInput(mesh.material.uniforms.u_HitPoints.value[0], 'thickness', { label: 'Hit point thickness', min: 0, max: 1, step: 0.01 })
+      .on('change', ({ value }) => {
+        mesh.material.uniforms.u_HitPoints.value[0].thickness = value
+      })
 
     folder.addSeparator()
 

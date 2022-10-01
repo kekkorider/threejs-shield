@@ -17,7 +17,10 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 
+import { gsap } from 'gsap'
+
 import { gltfLoader, textureLoader } from './loaders'
+import { hitPointsNum } from './const'
 
 import { ShieldMaterial } from './materials/ShieldMaterial'
 import { FloorMaterial } from './materials/FloorMaterial'
@@ -33,6 +36,8 @@ class App {
   constructor(container) {
     this.container = document.querySelector(container)
     this.screen = new Vector2(this.container.clientWidth, this.container.clientHeight)
+
+    this.currentHitPointsNumber = 0
 
     this.bulletGeometry = new CylinderGeometry(0.03, 0.03, 0.3, 12, 1)
   }
@@ -200,11 +205,6 @@ class App {
 
     this.ray.set(this.laser.position, shieldPos.sub(laserPos).normalize())
     this.laser.lookAt(this.shield.position)
-
-    // const intersects = this.ray.intersectObject(this.shield)
-
-    // if (intersects.length > 0)
-    //   this.shield.material.uniforms.u_HitPoint.value = intersects[0].point
   }
 
   #createLaser() {
@@ -232,7 +232,30 @@ class App {
     window.addEventListener('resize', this.#resizeCallback, { passive: true })
 
     window.addEventListener('collide', e => {
-      this.shield.material.uniforms.u_HitPoint.value = e.detail.hitPoint
+      if ((this.currentHitPointsNumber + 1) > hitPointsNum) return
+
+      this.currentHitPointsNumber++
+
+      this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointsNumber - 1] = {
+        position: e.detail.hitPoint,
+        size: 0,
+        thickness: 0
+      }
+
+      const hitPoint = this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointsNumber - 1]
+
+      const tl = new gsap.timeline({
+        onComplete: () => {
+          this.currentHitPointsNumber--
+        }
+      })
+
+      tl
+        .addLabel('start')
+        .to(hitPoint, { thickness: 0.45, duration: 0.4 }, 'start')
+        .to(hitPoint, { size: 1, duration: 1 }, 'start')
+        .to(hitPoint, { thickness: 0, duration: 0.5 }, 'start+=0.4')
+
       const item = this.simulation.items.find(item => item.physicsBody === e.detail.body)
       this.scene.remove(item.mesh)
       this.simulation.removeItem(item)

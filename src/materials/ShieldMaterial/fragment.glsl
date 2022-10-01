@@ -1,12 +1,16 @@
+struct HitPoint {
+  vec3 position;
+  float thickness;
+  float size;
+};
+
 varying vec2 vUv;
 varying vec3 vWorldPosition;
 varying vec3 vNormal;
 
 uniform sampler2D t_Noise;
 
-uniform vec3 u_HitPoint;
-uniform float u_HitPointSize;
-uniform float u_HitPointThickness;
+uniform HitPoint u_HitPoints[HIT_POINTS_NUM];
 uniform vec4 u_HitPointColorA;
 uniform vec4 u_HitPointColorB;
 
@@ -27,14 +31,22 @@ void main() {
   vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
 
   // Draw a ring on the surface of the sphere
-  float dOuter = distance(u_HitPoint, vWorldPosition);
-  dOuter = smoothstep(u_HitPointSize, u_HitPointSize+u_HitPointThickness, dOuter);
-  dOuter = 1.0 - dOuter;
+  float hits = 0.0;
 
-  float dInner = distance(u_HitPoint, vWorldPosition);
-  dInner = smoothstep(u_HitPointSize-u_HitPointThickness, u_HitPointSize, dInner);
+  for (int i = 0; i < HIT_POINTS_NUM; i++) {
+    float dOuter = distance(u_HitPoints[i].position, vWorldPosition);
+    dOuter = smoothstep(u_HitPoints[i].size, u_HitPoints[i].size+u_HitPoints[i].thickness, dOuter);
+    dOuter = 1.0 - dOuter;
 
-  float d = dOuter*dInner;
+    float dInner = distance(u_HitPoints[i].position, vWorldPosition);
+    dInner = smoothstep(u_HitPoints[i].size-u_HitPoints[i].thickness, u_HitPoints[i].size, dInner);
+
+    float d = dOuter*dInner;
+
+    hits += d;
+
+    hits = clamp(hits, 0.0, 2.0);
+  }
 
   // Fresnel effect
   float fresnel = 1.0 - max(0.0, dot(viewDirection, normal));
@@ -42,7 +54,7 @@ void main() {
   fresnel = smoothstep(0.45, 0.65, fresnel);
   fresnel *= u_FresnelStrength;
 
-  vec4 color = mix(u_HitPointColorA, u_HitPointColorB, d*smoothstep(0.3, 0.6, noise.r));
+  vec4 color = mix(u_HitPointColorA, u_HitPointColorB, hits*smoothstep(0.3, 0.6, noise.r));
 
   #if !defined(FLIP_SIDED)
     color.rgb += fresnel*u_FresnelColor;
