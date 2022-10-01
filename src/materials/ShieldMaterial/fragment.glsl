@@ -12,6 +12,7 @@ uniform vec4 u_HitPointColorB;
 
 uniform float u_FresnelFalloff;
 uniform float u_FresnelStrength;
+uniform vec3 u_FresnelColor;
 
 uniform float u_Time;
 
@@ -44,7 +45,7 @@ void main() {
   vec4 color = mix(u_HitPointColorA, u_HitPointColorB, d*smoothstep(0.3, 0.6, noise.r));
 
   #if !defined(FLIP_SIDED)
-    color.rgb += fresnel;
+    color.rgb += fresnel*u_FresnelColor;
   #endif
 
   gl_FragColor = color;

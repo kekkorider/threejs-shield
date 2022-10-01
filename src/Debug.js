@@ -79,6 +79,8 @@ export class Debug {
 
     folder.addInput(mesh.material.uniforms.u_FresnelFalloff, 'value', { label: 'Fresnel falloff', min: 0, max: 3 })
     folder.addInput(mesh.material.uniforms.u_FresnelStrength, 'value', { label: 'Fresnel strength', min: 0, max: 1 })
+
+    this.#createColorUniformControl(mesh, folder, 'u_FresnelColor', 'Fresnel color')
   }
 
   #createHitPointConfig() {
@@ -107,6 +109,24 @@ export class Debug {
 
     folder.addInput(params, 'color', { label }).on('change', e => {
       obj.color.setRGB(e.value.r, e.value.g, e.value.b).multiplyScalar(1 / 255)
+    })
+  }
+
+  /**
+   * Adds a color control for a custom uniform to the given object in the given folder.
+   *
+   * @param {THREE.Mesh} obj A `THREE.Mesh` object
+   * @param {*} folder The folder to add the control to
+   * @param {String} uniformName The name of the uniform to control
+   * @param {String} label The label to use for the control
+   */
+  #createColorUniformControl(obj, folder, uniformName, label = 'Color') {
+    const baseColor255 = obj.material.uniforms[uniformName].value.clone().multiplyScalar(255)
+    const { r, g, b } = baseColor255
+    const params = { color: { r, g, b } }
+
+    folder.addInput(params, 'color', { label, view: 'color' }).on('change', ({ value }) => {
+      obj.material.uniforms[uniformName].value.setRGB(value.r, value.g, value.b).multiplyScalar(1 / 255)
     })
   }
 
