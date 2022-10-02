@@ -39,7 +39,7 @@ class App {
 
     this.currentHitPointIndex = 0
 
-    this.bulletGeometry = new CylinderGeometry(0.03, 0.03, 0.3, 12, 1)
+    this.bulletGeometry = new CylinderGeometry(0.02, 0.02, 0.4, 12, 1)
   }
 
   async init() {
@@ -92,7 +92,7 @@ class App {
 
     // Shoot the bullet towards the shield
     const dirVector = new Vector3()
-    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(6)
+    dirVector.subVectors(this.shield.position, bullet.position).normalize().multiplyScalar(10)
     body.physicsBody.velocity.set(dirVector.x, dirVector.y, dirVector.z)
   }
 
