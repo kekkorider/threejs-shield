@@ -214,6 +214,12 @@ class App {
   }
 
   #addListeners() {
+    document.querySelector('#shoot').addEventListener('click', () => this.spawnBullet({
+      x: gsap.utils.random(2, 5) * gsap.utils.random([-1, 1]),
+      y: gsap.utils.random(-3, 3),
+      z: gsap.utils.random(2, 5) * gsap.utils.random([-1, 1])
+    }), { passive: true })
+
     window.addEventListener('resize', this.#resizeCallback, { passive: true })
 
     window.addEventListener('collide', e => {

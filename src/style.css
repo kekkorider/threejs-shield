@@ -14,6 +14,27 @@ body {
   outline: none;
 }
 
+#shoot {
+  background: white;
+  bottom: 40px;
+  border: none;
+  clip-path: polygon(0% 0%, 93% 0%, 100% 20%, 100% 100%, 7% 100%, 0% 80%);
+  color: black;
+  cursor: pointer;
+  font-family: "Press Start 2P", cursive;
+  font-size: 1.2rem;
+  padding: 0.7em 1.2em;
+  position: fixed;
+  right: 40px;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+#shoot:active {
+  background: black;
+  color: white;
+}
+
 #debug {
   position: fixed;
   right: 10px;
