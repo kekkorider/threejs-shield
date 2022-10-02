@@ -45,12 +45,6 @@ export class Debug {
       window.dispatchEvent(new CustomEvent('togglePhysicsDebug'))
     })
 
-    folder.addSeparator()
-
-    folder.addButton({ title: 'Spawn Bullet from laser position' }).on('click', () => {
-      this.app.spawnBullet()
-    })
-
     folder.addButton({ title: 'Spawn Bullet from random position' }).on('click', () => {
       this.app.spawnBullet({
         x: gsap.utils.random(2, 5) * gsap.utils.random([-1, 1]),
@@ -70,13 +64,13 @@ export class Debug {
   #createControlsConfig() {
     const folder = this.pane.addFolder({ title: 'Controls' })
 
-    folder.addButton({ title: 'Remove' }).on('click', () => {
+    folder.addButton({ title: 'Hide' }).on('click', () => {
       this.app.transformControls.detach()
     })
 
     folder.addSeparator()
 
-    const items = ['Plane', 'Laser']
+    const items = ['Plane']
 
     items.forEach(name => {
       folder.addButton({ title: `Attach to ${name}` }).on('click', () => {

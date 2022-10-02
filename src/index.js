@@ -8,8 +8,6 @@ import {
   Mesh,
   PlaneGeometry,
   CylinderGeometry,
-  MeshBasicMaterial,
-  Raycaster,
   Vector3,
   RepeatWrapping
 } from 'three'
@@ -56,8 +54,6 @@ class App {
     await this.#loadTextures()
     await this.#createShield()
 
-    this.#createLaser()
-    this.#createRay()
     this.#addListeners()
     this.#createControls()
     this.#createPostprocess()
@@ -80,7 +76,7 @@ class App {
     this.#removeListeners()
   }
 
-  spawnBullet(position = this.laser.position) {
+  spawnBullet(position) {
     // Add bullet mesh to scene
     const bullet = new Mesh(this.bulletGeometry, BulletMaterial)
 
@@ -105,7 +101,6 @@ class App {
 
     this.shield.material.uniforms.u_Time.value = elapsed;
 
-    this.#updateRay()
     this.simulation.update()
   }
 
@@ -203,39 +198,10 @@ class App {
     geometry.rotateX(-Math.PI * 0.5)
 
     this.plane = new Mesh(geometry, FloorMaterial)
-    this.plane.position.y -= 0.7
+    this.plane.position.y -= 0.2
     this.plane.name = 'Plane'
 
     this.scene.add(this.plane)
-  }
-
-  #createRay() {
-    this.ray = new Raycaster(this.laser.position, new Vector3())
-  }
-
-  #updateRay() {
-    const shieldPos = this.shield.position.clone()
-    const laserPos = this.laser.position.clone()
-
-    this.ray.set(this.laser.position, shieldPos.sub(laserPos).normalize())
-    this.laser.lookAt(this.shield.position)
-  }
-
-  #createLaser() {
-    const geometry = new CylinderGeometry(0.015, 0.015, 1, 12, 1)
-    geometry.rotateX(-Math.PI * 0.5)
-    geometry.translate(0, 0, 0.5)
-
-    const material = new MeshBasicMaterial({ color: 0xff0000 })
-
-    this.laser = new Mesh(geometry, material)
-    this.laser.name = 'Laser'
-    this.laser.position.set(4, 0.3, 2)
-    this.laser.scale.z = 8
-
-    this.scene.add(this.laser)
-
-    this.laser.visible = false
   }
 
   #createSimulation() {
