@@ -99,8 +99,9 @@ class App {
   #update() {
     const elapsed = this.clock.getElapsedTime()
 
-    this.shield.material.uniforms.u_Time.value = elapsed;
+    this.shield.material.uniforms.u_Time.value = elapsed
 
+    this.orbitControls.update()
     this.simulation.update()
   }
 
@@ -114,7 +115,7 @@ class App {
 
   #createCamera() {
     this.camera = new PerspectiveCamera(75, this.screen.x / this.screen.y, 0.1, 100)
-    this.camera.position.set(-0.7, 0.8, 3)
+    this.camera.position.set(-0.7, 1, 3)
   }
 
   #createRenderer() {
@@ -145,6 +146,10 @@ class App {
 
   #createControls() {
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.orbitControls.target = new Vector3(0, 0.5, 0)
+    this.orbitControls.autoRotate = true
+    this.orbitControls.enablePan = false
+    this.orbitControls.enableRotate = false
 
     this.transformControls = new TransformControls(this.camera, this.renderer.domElement)
 
