@@ -36,7 +36,7 @@ export class Debug {
 
     folder.addSeparator()
 
-    folder.addMonitor(this.app, 'currentHitPointsNumber', { label: 'Hit points number' })
+    folder.addMonitor(this.app, 'currentHitPointIndex', { label: 'Hit point index' })
 
     folder.addSeparator()
 

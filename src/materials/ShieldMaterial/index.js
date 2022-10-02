@@ -19,10 +19,10 @@ export const ShieldMaterial = new ShaderMaterial({
     t_Noise: { value: null },
     u_Time: { value: 0 },
     u_HitPoints: { value: new Array(hitPointsNum).fill({ position: new Vector3(999, 999, 999), size: 0, thickness: 0 }) },
-    u_HitPointColorA: { value: new Vector4(0.27450980392156865, 0.027450980392156862, 0.6392156862745098, 0.008) },
-    u_HitPointColorB: { value: new Vector4(0.20784313725490197, 0.3607843137254902, 0.6862745098039216, 0.8) },
+    u_HitPointColorA: { value: new Vector4(0, 168 / 255, 245 / 255, 0.04) },
+    u_HitPointColorB: { value: new Vector4(53 / 255, 175 / 255, 90 / 255, 0.8) },
     u_FresnelFalloff: { value: 0.75 },
     u_FresnelStrength: { value: 0.85 },
-    u_FresnelColor: { value: new Color(0xff0000) }
+    u_FresnelColor: { value: new Color(1, 144 / 255, 0) }
   }
 })

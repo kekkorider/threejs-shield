@@ -37,7 +37,7 @@ class App {
     this.container = document.querySelector(container)
     this.screen = new Vector2(this.container.clientWidth, this.container.clientHeight)
 
-    this.currentHitPointsNumber = 0
+    this.currentHitPointIndex = 0
 
     this.bulletGeometry = new CylinderGeometry(0.03, 0.03, 0.3, 12, 1)
   }
@@ -232,23 +232,17 @@ class App {
     window.addEventListener('resize', this.#resizeCallback, { passive: true })
 
     window.addEventListener('collide', e => {
-      if ((this.currentHitPointsNumber + 1) > hitPointsNum) return
+      this.currentHitPointIndex = gsap.utils.wrap(0, hitPointsNum, this.currentHitPointIndex + 1)
 
-      this.currentHitPointsNumber++
-
-      this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointsNumber - 1] = {
+      this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointIndex - 1] = {
         position: e.detail.hitPoint,
         size: 0,
         thickness: 0
       }
 
-      const hitPoint = this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointsNumber - 1]
+      const hitPoint = this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointIndex - 1]
 
-      const tl = new gsap.timeline({
-        onComplete: () => {
-          this.currentHitPointsNumber--
-        }
-      })
+      const tl = new gsap.timeline()
 
       tl
         .addLabel('start')
