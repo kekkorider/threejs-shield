@@ -8,6 +8,7 @@ export class Debug {
 
     this.#createPanel()
     this.#createSceneConfig()
+    this.#createBloomConfig()
     this.#createControlsConfig()
     this.#createShieldConfig()
     this.#createHitPointConfig()
@@ -57,6 +58,13 @@ export class Debug {
         z: gsap.utils.random(2, 5) * gsap.utils.random([-1, 1])
       })
     })
+  }
+
+  #createBloomConfig() {
+    const folder = this.pane.addFolder({ title: 'Postprocess - Bloom' })
+
+    folder.addInput(this.app.bloomPass.effects[0], 'intensity', { label: 'Intensity', min: 0, max: 5 })
+    folder.addInput(this.app.bloomPass.effects[0].mipmapBlurPass, 'radius', { label: 'Radius', min: 0, max: 2 })
   }
 
   #createControlsConfig() {

@@ -17,6 +17,8 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 
+import { BloomEffect, EffectComposer, EffectPass, RenderPass } from "postprocessing"
+
 import { gsap } from 'gsap'
 
 import { gltfLoader, textureLoader } from './loaders'
@@ -58,6 +60,7 @@ class App {
     this.#createRay()
     this.#addListeners()
     this.#createControls()
+    this.#createPostprocess()
 
     if (window.location.hash.includes('#debug')) {
       const panel = await import('./Debug.js')
@@ -107,7 +110,7 @@ class App {
   }
 
   #render() {
-    this.renderer.render(this.scene, this.camera)
+    this.composer.render()
   }
 
   #createScene() {
@@ -122,7 +125,9 @@ class App {
   #createRenderer() {
     this.renderer = new WebGLRenderer({
       alpha: true,
-      antialias: window.devicePixelRatio === 1
+      antialias: false,
+      stencil: false,
+      depth: false
     })
 
     this.container.appendChild(this.renderer.domElement)
@@ -132,6 +137,15 @@ class App {
     this.renderer.setClearColor(0x121212)
     this.renderer.physicallyCorrectLights = false
     this.renderer.localClippingEnabled = true
+  }
+
+  #createPostprocess() {
+    this.composer = new EffectComposer(this.renderer)
+
+    this.composer.addPass(new RenderPass(this.scene, this.camera))
+
+    this.bloomPass = new EffectPass(this.camera, new BloomEffect({ intensity: 3 }))
+    this.composer.addPass(this.bloomPass)
   }
 
   #createControls() {
@@ -232,15 +246,13 @@ class App {
     window.addEventListener('resize', this.#resizeCallback, { passive: true })
 
     window.addEventListener('collide', e => {
-      this.currentHitPointIndex = gsap.utils.wrap(0, hitPointsNum, this.currentHitPointIndex + 1)
-
-      this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointIndex - 1] = {
+      this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointIndex] = {
         position: e.detail.hitPoint,
         size: 0,
         thickness: 0
       }
 
-      const hitPoint = this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointIndex - 1]
+      const hitPoint = this.shield.material.uniforms.u_HitPoints.value[this.currentHitPointIndex]
 
       const tl = new gsap.timeline()
 
@@ -253,6 +265,8 @@ class App {
       const item = this.simulation.items.find(item => item.physicsBody === e.detail.body)
       this.scene.remove(item.mesh)
       this.simulation.removeItem(item)
+
+      this.currentHitPointIndex = gsap.utils.wrap(0, hitPointsNum, this.currentHitPointIndex + 1)
     })
   }
 

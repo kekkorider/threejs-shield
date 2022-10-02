@@ -44,8 +44,6 @@ void main() {
     float d = dOuter*dInner;
 
     hits += d;
-
-    hits = clamp(hits, 0.0, 2.0);
   }
 
   // Fresnel effect
