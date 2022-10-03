@@ -47,7 +47,7 @@ body {
 }
 
 #credits {
-  bottom: 24px;
+  bottom: 100px;
   color: white;
   left: 24px;
   position: fixed;
@@ -72,7 +72,7 @@ body {
 
 .copy {
   line-height: 1.4;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .copy a:hover {
@@ -92,5 +92,9 @@ body {
 
   .copy {
     font-size: 1rem;
+  }
+
+  #credits {
+    bottom: 24px;
   }
 }

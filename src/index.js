@@ -99,6 +99,9 @@ class App {
   #update() {
     const elapsed = this.clock.getElapsedTime()
 
+    this.orbitControls.maxDistance = this.orbitControls.minDistance = this.screen.x < 1024 ? 5 : 3
+    this.camera.position.y = this.screen.x < 1024 ? 0.7 : 1
+
     this.shield.material.uniforms.u_Time.value = elapsed
 
     this.orbitControls.update()
