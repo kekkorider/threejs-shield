@@ -1,8 +1,10 @@
 body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   overflow: hidden;
   height: 100vh;
   margin: 0;
   padding: 0;
+  font-size: 16px;
 }
 
 #app {
@@ -15,11 +17,12 @@ body {
 }
 
 #shoot {
-  background: white;
+  background: #aded0f;
   bottom: 40px;
   border: none;
   clip-path: polygon(0% 0%, 93% 0%, 100% 20%, 100% 100%, 7% 100%, 0% 80%);
-  color: black;
+  color: white;
+  text-shadow: 2px 2px 0px black;
   cursor: pointer;
   font-family: "Press Start 2P", cursive;
   font-size: 1.2rem;
@@ -31,8 +34,8 @@ body {
 }
 
 #shoot:active {
-  background: black;
-  color: white;
+  background: white;
+  color: #aded0f;
 }
 
 #debug {
@@ -41,4 +44,53 @@ body {
   top: 10px;
   width: 350px;
   z-index: 10;
+}
+
+#credits {
+  bottom: 24px;
+  color: white;
+  left: 24px;
+  position: fixed;
+  z-index: 1;
+  width: calc(100% - 40px);
+
+  @media screen and (min-width: 800px) {
+    max-width: 60%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    max-width: 35%;
+  }
+}
+
+.title {
+  font-family: 'Antonio', sans-serif;
+  font-size: 2.5rem;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.copy {
+  line-height: 1.4;
+  font-size: 0.8rem;
+}
+
+.copy a:hover {
+  text-decoration: none;
+}
+
+.highlight {
+  color: #aded0f;
+  font-weight: 600;
+}
+
+@media screen and (min-width: 1024px) {
+
+  .title {
+    font-size: 4.6rem;
+  }
+
+  .copy {
+    font-size: 1rem;
+  }
 }
